@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Mening Profilim</title>
+</head>
+<body class="bg-slate-50">
+    <div class="max-w-xl mx-auto py-20 px-4">
+        <div class="bg-white rounded-[3rem] shadow-xl border border-slate-200 p-10 text-center">
+            <div class="w-32 h-32 bg-blue-600 rounded-[2.5rem] mx-auto flex items-center justify-center text-white text-5xl font-black mb-6 shadow-lg shadow-blue-200">
+                {{ user.username|slice:":1"|upper }}
+            </div>
+            <h1 class="text-3xl font-black text-slate-900 mb-2">{{ user.get_full_name|default:user.username }}</h1>
+            <p class="text-slate-400 font-medium mb-8">{{ user.email|default:"Email kiritilmagan" }}</p>
+
+            <div class="grid grid-cols-2 gap-4 mb-10">
+                <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                    <span class="block text-2xl font-black text-blue-600">{{ user.date_joined|date:"Y" }}</span>
+                    <span class="text-[10px] text-slate-400 font-bold uppercase">Ro'yxatdan o'tgan</span>
+                </div>
+                <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                    <span class="block text-2xl font-black text-slate-900">Admin</span>
+                    <span class="text-[10px] text-slate-400 font-bold uppercase">Roli</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <a href="{% url 'candidate_list' %}" class="bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-slate-800 transition">Asosiy sahifaga qaytish</a>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="w-full text-red-600 font-bold py-4 hover:bg-red-50 rounded-2xl transition">Tizimdan chiqish</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
