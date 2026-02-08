@@ -6,10 +6,8 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = 'django-insecure-9k7q+tn4&j4lwhojmdsk!o!$4xj$h%6j%usja-0z&7d%$0ru(u'
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['hrbot.asldev.uz', 'www.hrbot.asldev.uz.uz']
 
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
