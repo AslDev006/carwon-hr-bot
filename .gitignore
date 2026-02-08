@@ -4,3 +4,5 @@ hr_bot.log
 .idea
 candidates
 venv
+__pycache__/
+*.pyc
