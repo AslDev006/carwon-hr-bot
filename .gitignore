@@ -3,3 +3,4 @@ db.sqlite3
 hr_bot.log
 .idea
 candidates
+venv
