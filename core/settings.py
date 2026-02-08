@@ -1,13 +1,16 @@
-from pathlib import Path
-BASE_DIR = Path(__file__).resolve().parent.parent
-from dotenv import load_dotenv
 import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 load_dotenv(os.path.join(BASE_DIR, '.env'))
-SECRET_KEY = 'django-insecure-9k7q+tn4&j4lwhojmdsk!o!$4xj$h%6j%usja-0z&7d%$0ru(u'
-DEBUG = True
 
-ALLOWED_HOSTS = ['hrbot.asldev.uz', 'www.hrbot.asldev.uz.uz']
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key')
 
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
+
+ALLOWED_HOSTS = ['hrbot.asldev.uz', 'www.hrbot.asldev.uz', '127.0.0.1', 'localhost']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -16,7 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'models',
+    'models', # Sizning appingiz
 ]
 
 MIDDLEWARE = [
@@ -34,23 +37,20 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media', # Media uchun qo'shildi
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -59,35 +59,26 @@ DATABASES = {
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
-LANGUAGE_CODE = 'en-us'
 
+LANGUAGE_CODE = 'uz-uz' # O'zbek tiliga o'girildi
 TIME_ZONE = 'Asia/Tashkent'
-
-
 USE_I18N = True
-
 USE_TZ = True
-STATIC_URL = 'static/'
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# --- STATIC VA MEDIA SOZLAMALARI ---
+STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'static' # collectstatic uchun majburiy
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media' # Nomzodlar fayllari uchun majburiy
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGGING = {
     'version': 1,
@@ -99,7 +90,7 @@ LOGGING = {
         'console': {'class': 'logging.StreamHandler', 'formatter': 'standard'},
         'file': {
             'class': 'logging.FileHandler',
-            'filename': 'hr_bot.log',
+            'filename': os.path.join(BASE_DIR, 'hr_bot.log'),
             'formatter': 'standard'
         },
     },
