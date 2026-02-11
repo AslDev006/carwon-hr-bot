@@ -79,12 +79,30 @@ async def cmd_start(message: types.Message, state: FSMContext, bot: Bot):
         await bot.send_message(message.chat.id, "<b>Carwon HR botiga xush kelibsiz.</b>\n\nVakansiyani tanlang:", reply_markup=kb, parse_mode="HTML")
     except Exception as e: await report_error(bot, message.from_user, e, step=0)
 
+
 @router.callback_query(F.data.startswith("v_"))
 async def start_survey(call: types.CallbackQuery, state: FSMContext, bot: Bot):
     v_id = int(call.data.split("_")[1])
-    await state.update_data(v_id=v_id, step=0, answers={})
+    vacancy = await sync_to_async(Vacancy.objects.get)(id=v_id)
+    await state.update_data(v_id=v_id)
+    text = (
+        f"📋 <b>{vacancy.title}</b>\n\n"
+        f"{vacancy.description if vacancy.description else 'Ushbu vakansiya boʻyicha maʼlumot kiritilmagan.'}\n\n"
+        f"<i>Agar shartlar ma'qul bo'lsa, anketani to'ldirishni boshlang:</i>"
+    )
+    kb = types.InlineKeyboardMarkup(inline_keyboard=[
+        [types.InlineKeyboardButton(text="🚀 Anketani boshlash", callback_data="start_questions")]
+    ])
+    await bot.send_message(call.message.chat.id, text, reply_markup=kb, parse_mode="HTML")
+    await call.answer()
+
+
+@router.callback_query(F.data == "start_questions")
+async def start_questions_handler(call: types.CallbackQuery, state: FSMContext, bot: Bot):
+    await state.update_data(step=0, answers={})
     await bot.send_message(call.message.chat.id, QUESTIONS[0]["text"])
     await state.set_state(Interview.answering)
+    await call.answer()
 
 @router.callback_query(Interview.answering, F.data.startswith("choice_"))
 async def handle_choice(call: types.CallbackQuery, state: FSMContext, bot: Bot):
