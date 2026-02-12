@@ -139,7 +139,7 @@ async def handle_interview(message: types.Message, state: FSMContext, bot: Bot):
             voice_c = await download_tg_file(bot, answers.get('family_audio')) if answers.get('family_audio') else None
             cand = await sync_save_candidate(message.from_user.id, data['v_id'], answers, video_c, voice_c)
             await bot.send_message(chat_id, "✅ Arizangiz muvaffaqiyatli qabul qilindi!")
-            base_url = os.getenv("SITE_URL", "http://127.0.0.1:8000").rstrip('/')
+            base_url = os.getenv("SITE_URL", "https://hrbot.asldev.uz/").rstrip('/')
             kb = types.InlineKeyboardMarkup(inline_keyboard=[[types.InlineKeyboardButton(text="Webda ko'rish 🌐", url=f"{base_url}/candidate/{cand.id}/")]])
             await bot.send_message(os.getenv("ADMIN_ID"), f"🆕 <b>Yangi nomzod!</b>\n👤 {cand.full_name}\n💼 {cand.vacancy.title}", reply_markup=kb, parse_mode="HTML")
             await state.clear()
